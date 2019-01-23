@@ -34,10 +34,13 @@ class TasksController < ApplicationController
     #@task = Task.new(task_params.merge(user_id: current_user.id))
     @task = current_user.tasks.new(task_params)
     @task.name = params[:task][:name]
+    @task.description = params[:task][:description]
     respond_to do |format|
       if @task.save
         format.html { redirect_to root_url, notice: 'Task was successfully created.' }
+        format.js
         format.json { render :show, status: :created, location: @task }
+        @tasks = current_user.tasks.all
       else
         format.html { render :new }
         format.json { render json: @task.errors, status: :unprocessable_entity }
@@ -51,10 +54,8 @@ class TasksController < ApplicationController
     respond_to do |format|
       if @task.update(task_params)
         format.html { redirect_to root_url, notice: 'Task was successfully updated.' }
+        format.js
         format.json { render :show, status: :ok, location: @task }
-        @tasks = current_user.tasks.all
-        ActionCable.server.broadcast 'tasks',
-                                     html: render_to_string('index', layout: false)
       else
         format.html { render :edit }
         format.json { render json: @task.errors, status: :unprocessable_entity }
@@ -98,6 +99,6 @@ class TasksController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def task_params
-      params.permit(:name, :status, :user_id)
+      params.require(:task).permit(:name, :status, :user_id, :description)
     end
 end

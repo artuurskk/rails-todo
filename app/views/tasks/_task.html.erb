@@ -1,0 +1,49 @@
+<% unless @tasks.empty? %>
+  <ul class="list-group list-group-flush">
+
+      <% if task.status == 0 %>
+        <li class="list-group-item">
+          <div class="row">
+
+            <div class="col-9">
+              <h5><%= task.name %> (To Do)</h5>
+            </div>
+            <div class="col-3 text-right">
+              <%= link_to raw("<i class=\"fas fa-check\"></i>"),
+                          tasks_path(id: task),
+                          :method => :put,
+                          remote:true,
+                          class: 'btn btn-success' %>
+              <%= link_to raw("<i class=\"fas fa-trash-alt\"></i>"),
+                          task,
+                          remote: true,
+                          :method => :delete, class: 'btn btn-danger' %>
+            </div>
+          </div>          <div class="row">
+          <div class="col-12">
+            <p> <%= task.description %></p>
+            <p>Added: <%= task.created_at.to_date %></p>
+          </div>
+        </div>
+        </li>
+      <% else %>
+        <li class="list-group-item done">
+          <div class="row">
+            <div class="col-9">
+              <h5><%= task.name %> (Done)</h5>
+            </div>
+            <div class="col-3 text-right">
+              <%= link_to raw("<i class=\"fas fa-trash-alt\"></i>"),
+                          task,
+                          remote: true,
+                          :method => :delete, class: 'btn btn-danger' %>
+            </div>
+          </div>
+        </li>
+      <% end %>
+
+  </ul>
+<% else %>
+  <p style="padding:25px;">Your list is empty. Click New Task to add something!</p>
+
+<% end %>
