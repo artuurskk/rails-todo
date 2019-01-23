@@ -1,0 +1,92 @@
+<% if notice %>
+    <div class="alert alert-info" role="alert">
+      <%= notice %>
+    </div>
+  <% end %>
+  <% if current_user %>
+  <h4>Hi, <%= @current_user.email %></h4>
+  <br>
+  <div class="card task-container">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-md-6">
+          <h5>Your To Do list</h5>
+        </div>
+        <div class="col-md-4">
+          <form>
+            <div class="form-group input-group mb-3">
+              <%= text_field_tag :date, 'Select Date',
+                                 onchange: ("this.form.submit()"),
+                                 data:{ provide:'datepicker' },
+                                 value: @chosen_date,
+                                 :autocomplete => :off,
+              class: 'date-picker form-control' %>
+                <div class="input-group-append">
+                  <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-2">
+          <%= link_to 'New Task', new_task_path, class: 'btn btn-primary' %>
+        </div>
+      </div>
+    </div>
+    <div class="task-body">
+      <% if @tasks.count > 0 %>
+      <ul class="list-group list-group-flush">
+        <% @tasks.each do |task| %>
+          <% if task.status == 0 %>
+        <li class="list-group-item">
+          <div class="row">
+
+            <div class="col-9">
+                <h5><%= task.name %> (Status: To Do)</h5>
+            </div>
+            <div class="col-3 text-right">
+              <%= link_to raw("<i class=\"fas fa-check\"></i>"),
+                          tasks_path(id: task),
+                          :method => :put,
+                          remote:true,
+                          class: 'btn btn-success' %>
+              <%= link_to raw("<i class=\"fas fa-trash-alt\"></i>"),
+                          task,
+                          remote: true,
+                          :method => :delete, class: 'btn btn-danger' %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <p>Added: <%= task.created_at.to_date %></p>
+            </div>
+          </div>
+        </li>
+          <% else %>
+          <li class="list-group-item done">
+            <div class="row">
+              <div class="col-9">
+                <h5><%= task.name %> (Status: Done)</h5>
+              </div>
+              <div class="col-3 text-right">
+                <%= link_to raw("<i class=\"fas fa-trash-alt\"></i>"),
+                            task,
+                            :method => :delete, class: 'btn btn-danger' %>
+              </div>
+            </div>
+          </li>
+        <% end %>
+      <% end %>
+      </ul>
+      <% else %>
+      <p style="padding:25px;">Your list is empty. Click New Task to add something!</p>
+      <% end %>
+    </div>
+  </div>
+
+  <% else %>
+  <h4>Hi, guest.</h4>
+  <p>Login or sign up to add tasks.</p>
+  <br>
+  <%= link_to 'Login', login_path, class: 'btn btn-success' %>
+  <%= link_to 'Sign Up', signup_path, class: 'btn btn-primary' %>
+  <% end %>
