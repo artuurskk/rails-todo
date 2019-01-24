@@ -87,7 +87,6 @@ class TasksController < ApplicationController
           ActionCable.server.broadcast 'tasks',
                                        html: render_to_string('index', layout: false)
     end
-
   end
 
   private
@@ -99,6 +98,6 @@ class TasksController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def task_params
-      params.require(:task).permit(:name, :status, :user_id, :description)
+      params.permit(:name, :status, :user_id, :description)
     end
 end
